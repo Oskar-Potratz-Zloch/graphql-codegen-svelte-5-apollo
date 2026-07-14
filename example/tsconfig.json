@@ -1,13 +1,12 @@
 {
   "extends": "@tsconfig/svelte/tsconfig.json",
 
-  "include": ["src/**/*", "codegen.ts"],
+  "include": ["src/**/*", "codegen.svelte.ts"],
   "exclude": ["node_modules/*", "__sapper__/*", "public/*"],
   "compilerOptions": {
-    "baseUrl": "./",
     "sourceMap": true,
-    "target": "es6",
-    "module": "es6",
-    "moduleResolution": "node",
+    "target": "ES2022",
+    "module": "ES2022",
+    "moduleResolution": "bundler"
   }
 }

@@ -7,9 +7,7 @@ import {
 import { WebSocketLink } from '@apollo/client/link/ws';
 import { getOperationAST } from 'graphql';
 
-const cache = new InMemoryCache({
-  addTypename: true,
-});
+const cache = new InMemoryCache();
 
 const wsLink = new WebSocketLink({
   uri: 'wss://space-x-land-with-sub.herokuapp.com/graphql/',
@@ -36,5 +34,4 @@ const link = ApolloLink.split(
 export default new ApolloClient({
   cache,
   link,
-  connectToDevTools: true,
 });

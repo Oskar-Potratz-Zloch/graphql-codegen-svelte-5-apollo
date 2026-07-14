@@ -1,0 +1,47 @@
+type Query {
+  launches(limit: Int): [Launch!]!
+  users(where: User_bool_exp): [User!]!
+}
+
+type Mutation {
+  insert_users(objects: Insert_users_input!): Insert_users_mutation_response!
+  delete_users(where: User_bool_exp): Delete_users_mutation_response!
+}
+
+type Subscription {
+  usersAdded: [User!]!
+}
+
+type Launch {
+  mission_id: String
+  mission_name: String
+}
+
+type User {
+  id: Int!
+  name: String!
+  rocket: String
+  timestamp: String!
+}
+
+type Insert_users_mutation_response {
+  affected_rows: Int!
+  returning: [User!]!
+}
+
+type Delete_users_mutation_response {
+  affected_rows: Int!
+}
+
+input Insert_users_input {
+  name: String!
+  rocket: String
+}
+
+input User_bool_exp {
+  rocket: String_comparison_exp
+}
+
+input String_comparison_exp {
+  _eq: String
+}

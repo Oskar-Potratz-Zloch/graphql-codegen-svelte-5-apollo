@@ -12,17 +12,9 @@ import {
 } from "graphql";
 import { pascalCase } from "pascal-case";
 
-// const visitorPluginCommon = require("@graphql-codegen/visitor-plugin-common");
-
-const operationMap = {
-  query: "query",
-  subscription: "subscribe",
-  mutation: "mutate",
-};
-
 module.exports = {
   plugin: (schema, documents, config, info) => {
-    const allAst = concatAST(documents.map((d) => d.document));
+    const allAst = concatAST(documents.map((d) => d.document).filter((doc): doc is NonNullable<typeof doc> => doc != null));
 
     const allFragments: LoadedFragment[] = [
       ...(
@@ -51,116 +43,94 @@ module.exports = {
       (d) => d.kind === Kind.OPERATION_DEFINITION
     ) as OperationDefinitionNode[];
 
-    const operationImport = `${
-      operations.some((op) => op.operation == "query")
-        ? `ApolloQueryResult, ObservableQuery, WatchQueryOptions, ${
-            config.asyncQuery ? "QueryOptions, " : ""
-          }`
-        : ""
-    }${
-      operations.some((op) => op.operation == "mutation")
-        ? "MutationOptions, "
-        : ""
-    }${
-      operations.some((op) => op.operation == "subscription")
-        ? "SubscriptionOptions, "
-        : ""
-    }`.slice(0, -2);
+    const operationImport = `TypedDocumentNode, ApolloClient, ObservableQuery${
+      config.asyncQuery ? ", QueryOptions" : ""
+    }`;
 
     const imports = [
       `import client from "${config.clientPath}";`,
       `import type {
         ${operationImport}
       } from "@apollo/client";`,
-      `import { readable } from "svelte/store";`,
-      `import type { Readable } from "svelte/store";`,
-      `import gql from "graphql-tag"`,
+      `import { gql } from "@apollo/client"`,
     ];
 
     const ops = operations
       .map((o) => {
-        const dsl = `export const ${o.name.value}Doc = gql\`${
+        const dsl = `export const ${o.name!.value}Doc = gql\`${
           documents.find((d) =>
-            d.rawSDL.includes(`${o.operation} ${o.name.value}`)
-          ).rawSDL
+            d.rawSDL?.includes(`${o.operation} ${o.name!.value}`)
+          )?.rawSDL ?? ""
         }\``;
-        const op = `${pascalCase(o.name.value)}${pascalCase(o.operation)}`;
+        const op = `${pascalCase(o.name!.value)}${pascalCase(o.operation)}`;
         const opv = `${op}Variables`;
         let operation;
         if (o.operation == "query") {
-          operation = `export const ${o.name.value} = (
+          operation = `export const ${o.name!.value} = (
             options: Omit<
-              WatchQueryOptions<${opv}>, 
+              ApolloClient.WatchQueryOptions<${op}, ${opv}>,
               "query"
             >
-          ): Readable<
-            ApolloQueryResult<${op}> & {
-              query: ObservableQuery<
-                ${op},
-                ${opv}
-              >;
-            }
-          > => {
+          ) => {
             const q = client.watchQuery({
-              query: ${pascalCase(o.name.value)}Doc,
+              query: ${pascalCase(o.name!.value)}Doc as TypedDocumentNode<${op}, ${opv}>,
               ...options,
             });
-            var result = readable<
-              ApolloQueryResult<${op}> & {
-                query: ObservableQuery<
-                  ${op},
-                  ${opv}
-                >;
-              }
-            >(
-              { data: {} as any, loading: true, error: undefined, networkStatus: 1, query: q },
-              (set) => {
-                q.subscribe((v: any) => {
-                  set({ ...v, query: q });
-                });
-              }
-            );
-            return result;
+            let data = $state<${op}>();
+            let loading = $state(true);
+            let error = $state<Error>();
+            let networkStatus = $state(1);
+            q.subscribe((v: ObservableQuery.Result<${op}>) => {
+              data = v.data as unknown as ${op};
+              loading = v.loading;
+              error = v.error;
+              networkStatus = v.networkStatus;
+            });
+            return {
+              get data() { return data; },
+              get loading() { return loading; },
+              get error() { return error; },
+              get networkStatus() { return networkStatus; },
+              get query() { return q; },
+            };
           }
         `;
           if (config.asyncQuery) {
             operation =
               operation +
               `
-              export const Async${o.name.value} = (
-                options: Omit<
-                  QueryOptions<${opv}>,
-                  "query"
-                >
-              ) => {
-                return client.query<${op}>({query: ${pascalCase(
-                o.name.value
-              )}Doc, ...options})
-              }
-            `;
+export const Async${o.name!.value} = (
+            options: Omit<
+              ApolloClient.QueryOptions<${op}, ${opv}>,
+              "query"
+            >
+          ) => {
+            return client.query({query: ${pascalCase(o.name!.value)}Doc as TypedDocumentNode<${op}, ${opv}>, ...options})
+          }
+        `;
           }
         }
         if (o.operation == "mutation") {
-          operation = `export const ${o.name.value} = (
+          operation = `export const ${o.name!.value} = (
             options: Omit<
-              MutationOptions<any, ${opv}>, 
+              ApolloClient.MutateOptions<${op}, ${opv}, any>,
               "mutation"
             >
           ) => {
-            const m = client.mutate<${op}, ${opv}>({
-              mutation: ${pascalCase(o.name.value)}Doc,
+            const m = client.mutate({
+              mutation: ${pascalCase(o.name!.value)}Doc as TypedDocumentNode<${op}, ${opv}>,
               ...options,
             });
             return m;
           }`;
         }
         if (o.operation == "subscription") {
-          operation = `export const ${o.name.value} = (
-            options: Omit<SubscriptionOptions<${opv}>, "query">
+          operation = `export const ${o.name!.value} = (
+            options: Omit<ApolloClient.SubscribeOptions<${op}, ${opv}>, "query">
           ) => {
-            const q = client.subscribe<${op}, ${opv}>(
+            const q = client.subscribe(
               {
-                query: ${pascalCase(o.name.value)}Doc,
+                query: ${pascalCase(o.name!.value)}Doc as TypedDocumentNode<${op}, ${opv}>,
                 ...options,
               }
             )
