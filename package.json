@@ -1,42 +1,47 @@
 {
-  "name": "graphql-codegen-svelte-apollo",
+  "name": "graphql-codegen-svelte-5-apollo",
   "workspaces": ["example"],
   "author": "Thibaut Duchêne",
+  "contributors": ["Oskar Potratz-Złoch"],
   "version": "1.1.0",
-  "description": "GraphQL Code Generator plugin to generate client queries from graphql",
+  "description": "GraphQL Code Generator plugin that generates Svelte 5 query functions utilising Apollo Client v4",
   "main": "dist/index.js",
+  "files": ["dist/index.js"],
   "license": "MIT",
   "scripts": {
     "release": "standard-version",
     "compile": "tsc"
   },
   "dependencies": {
-    "@apollo/client": "^4.2.7",
     "@graphql-codegen/plugin-helpers": "^7.1.0",
     "@graphql-codegen/visitor-plugin-common": "^7.2.0",
     "camel-case": "^4.1.2",
     "pascal-case": "^3.1.2"
   },
   "devDependencies": {
+    "@apollo/client": "^4.2.7",
     "@types/node": "^26.1.1",
     "graphql": "^16.14.2",
     "typescript": "^5.9.3"
   },
   "peerDependencies": {
-    "graphql": "^16.14.2"
+    "@apollo/client": "^4.0.0",
+    "graphql": "^16.0.0"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ticruz38/graphql-codegen-svelte-apollo.git"
+    "url": "git+https://github.com/Oskar-Potratz-Zloch/graphql-codegen-svelte-5-apollo.git"
   },
   "keywords": [
     "svelte",
+    "svelte-5",
     "apollo",
+    "apollo-client",
     "graphql",
     "graphql-codegen"
   ],
   "bugs": {
-    "url": "https://github.com/ticruz38/graphql-codegen-svelte-apollo/issues"
+    "url": "https://github.com/Oskar-Potratz-Zloch/graphql-codegen-svelte-5-apollo/issues"
   },
-  "homepage": "https://github.com/ticruz38/graphql-codegen-svelte-apollo#readme"
+  "homepage": "https://github.com/Oskar-Potratz-Zloch/graphql-codegen-svelte-5-apollo#readme"
 }

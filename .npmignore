@@ -1,0 +1,10 @@
+src/
+example/
+docs/
+.vscode/
+node_modules/
+tsconfig.json
+.gitignore
+README.md
+AGENTS.md
+bun.lock

@@ -19,11 +19,11 @@ Go to `example/codegen.yml` and check that it's like this:
 
 ## Get started as a user of codegen-svelte-apollo
 
-Ensure that you have graphql & graphql-codegen-svelte-apollo in `example/package.json` with:
+Ensure that you have graphql & graphql-codegen-svelte-5-apollo in `example/package.json` with:
 
 ```bash
 cd example
-npm add graphql graphql-codegen-svelte-apollo
+npm add graphql graphql-codegen-svelte-5-apollo
 ```
 
 Go to `example/codegen.yml` and check that it's like this:

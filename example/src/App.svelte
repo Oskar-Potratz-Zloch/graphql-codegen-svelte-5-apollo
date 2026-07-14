@@ -30,7 +30,7 @@
   }
 </style>
 
-<div class="title">graphql-codegen-svelte-apollo</div>
+<div class="title">graphql-codegen-svelte-5-apollo</div>
 
 <Router {url}>
   <nav>
