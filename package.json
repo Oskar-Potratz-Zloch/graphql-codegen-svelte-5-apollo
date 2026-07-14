@@ -1,16 +1,25 @@
 {
   "name": "graphql-codegen-svelte-5-apollo",
-  "workspaces": ["example"],
+  "workspaces": [
+    "example"
+  ],
   "author": "Thibaut Duchêne",
-  "contributors": ["Oskar Potratz-Złoch"],
+  "contributors": [
+    "Oskar Potratz-Złoch"
+  ],
   "version": "1.1.0",
   "description": "GraphQL Code Generator plugin that generates Svelte 5 query functions utilising Apollo Client v4",
   "main": "dist/index.js",
-  "files": ["dist/index.js"],
+  "files": [
+    "dist/index.js"
+  ],
   "license": "MIT",
   "scripts": {
-    "release": "standard-version",
-    "compile": "tsc"
+    "compile": "tsc",
+    "test": "bun run compile && cd example && bun run types",
+    "changeset": "changeset",
+    "version": "changeset version",
+    "release": "bun run compile && changeset publish"
   },
   "dependencies": {
     "@graphql-codegen/plugin-helpers": "^7.1.0",
@@ -20,6 +29,7 @@
   },
   "devDependencies": {
     "@apollo/client": "^4.2.7",
+    "@changesets/cli": "^2.31.0",
     "@types/node": "^26.1.1",
     "graphql": "^16.14.2",
     "typescript": "^5.9.3"
