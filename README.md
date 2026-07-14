@@ -1,52 +1,17 @@
-# graphql-codegen-svelte-apollo
+# graphql-codegen-svelte-5-apollo
 
 A [GraphQL Code Generator](https://www.graphql-code-generator.com) plugin that generates fully typed Svelte 5 runes-based Apollo Client v4 hooks. Queries, mutations, and subscriptions are emitted as reactive getters with `$state` runes, giving you full TypeScript support out of the box.
 
-Forked from [ticruz38/graphql-codegen-svelte-apollo](https://github.com/ticruz38/graphql-codegen-svelte-apollo) and updated for **Apollo Client v4** and **Svelte 5 runes**.
+Forked from [ticruz38/graphql-codegen-svelte-5-apollo](https://github.com/ticruz38/graphql-codegen-svelte-5-apollo) and updated for **Apollo Client v4** and **Svelte 5 runes**.
 
 ## Quick Start
 
 Install dependencies:
 
-<details>
-<summary>bun</summary>
-
-```sh
-bun add graphql @apollo/client
-bun add -d @graphql-codegen/cli @graphql-codegen/typescript @graphql-codegen/typescript-operations graphql-codegen-svelte-apollo
-```
-
-</details>
-
-<details>
-<summary>pnpm</summary>
-
 ```sh
 pnpm add graphql @apollo/client
-pnpm add -D @graphql-codegen/cli @graphql-codegen/typescript @graphql-codegen/typescript-operations graphql-codegen-svelte-apollo
+pnpm add -D @graphql-codegen/cli @graphql-codegen/typescript @graphql-codegen/typescript-operations graphql-codegen-svelte-5-apollo
 ```
-
-</details>
-
-<details>
-<summary>yarn</summary>
-
-```sh
-yarn add graphql @apollo/client
-yarn add -D @graphql-codegen/cli @graphql-codegen/typescript @graphql-codegen/typescript-operations graphql-codegen-svelte-apollo
-```
-
-</details>
-
-<details>
-<summary>npm</summary>
-
-```sh
-npm i -S graphql @apollo/client
-npm i -D @graphql-codegen/cli @graphql-codegen/typescript @graphql-codegen/typescript-operations graphql-codegen-svelte-apollo
-```
-
-</details>
 
 Create `codegen.ts`:
 
@@ -54,13 +19,18 @@ Create `codegen.ts`:
 import type { CodegenConfig } from "@graphql-codegen/cli";
 
 const config: CodegenConfig = {
-  schema: "path/to/schema.graphql",
-  documents: "./src/**/*.graphql",
+  schema: "path/to/schema.graphql", // path or URL to your GraphQL schema
+  documents: "./src/**/*.graphql",   // glob for your query/mutation/subscription files
   generates: {
-    "./src/lib/generated.ts": {
-      plugins: ["typescript", "typescript-operations", "graphql-codegen-svelte-apollo"],
+    "./src/lib/generated.ts": {      // output file path
+      plugins: [
+        "typescript",                          // generates TS types from schema
+        "typescript-operations",               // generates types for your operations
+        "graphql-codegen-svelte-5-apollo",       // this plugin — generates Svelte hooks
+      ],
       config: {
-        clientPath: "./apollo-client", // must default-export an ApolloClient instance
+        clientPath: "./apollo-client", // path to file that default-exports an ApolloClient instance
+        // asyncQuery: true,           // uncomment to also generate promise-based async helpers
       },
     },
   },
@@ -71,41 +41,9 @@ export default config;
 
 Run codegen:
 
-<details>
-<summary>bun</summary>
-
-```sh
-bunx graphql-codegen
-```
-
-</details>
-
-<details>
-<summary>pnpm</summary>
-
 ```sh
 pnpm exec graphql-codegen
 ```
-
-</details>
-
-<details>
-<summary>yarn</summary>
-
-```sh
-yarn graphql-codegen
-```
-
-</details>
-
-<details>
-<summary>npm</summary>
-
-```sh
-npx graphql-codegen
-```
-
-</details>
 
 ## Usage
 
@@ -191,26 +129,6 @@ subscription OnMessageAdded {
   const result = OnMessageAdded();
 </script>
 ```
-
-## API Reference
-
-### `clientPath`
-
-| | |
-|---|---|
-| type | `string` |
-| required | **yes** |
-
-Path to the Apollo Client default export.
-
-### `asyncQuery`
-
-| | |
-|---|---|
-| type | `boolean` |
-| default | `false` |
-
-When `true`, generates promise-based `Async*` helpers alongside observable hooks.
 
 ## Contributing
 
