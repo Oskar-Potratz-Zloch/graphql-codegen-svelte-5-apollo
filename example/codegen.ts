@@ -5,14 +5,14 @@ const config: CodegenConfig = {
   overwrite: true,
   documents: "./src/**/*.gql",
   generates: {
-    "./src/codegen.svelte.ts": {
+    "./src/graphql/generated.svelte.ts": {
       plugins: [
         "typescript",
         "typescript-operations",
         "../dist/index.js",
       ],
       config: {
-        clientPath: "./apollo-client",
+        clientPath: "src/apollo-client",
         asyncQuery: true,
       },
     },

@@ -1,12 +1,14 @@
 {
-  "extends": "@tsconfig/svelte/tsconfig.json",
-
-  "include": ["src/**/*", "codegen.svelte.ts"],
-  "exclude": ["node_modules/*", "__sapper__/*", "public/*"],
+  "extends": "./.svelte-kit/tsconfig.json",
   "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
     "sourceMap": true,
-    "target": "ES2022",
-    "module": "ES2022",
+    "strict": true,
     "moduleResolution": "bundler"
   }
 }

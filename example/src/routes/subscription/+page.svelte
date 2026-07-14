@@ -5,12 +5,56 @@
     GetCodegenUsersDoc,
     InsertUsersAndPublish,
     UsersAdded,
-  } from "src/codegen";
+  } from "src/graphql/generated.svelte";
 
-  $: userName = "";
-  $: query = GetCodegenUsers({});
-  $: subscription = UsersAdded({});
+  let userName = $state("");
+  const query = GetCodegenUsers({});
+  const subscription = UsersAdded({});
 </script>
+
+<main class="cards">
+  <div class="card">
+    <h2>Add User</h2>
+    <input placeholder="User name..." bind:value={userName} />
+    <button
+      disabled={userName.length === 0}
+      onclick={() => {
+        InsertUsersAndPublish({
+          variables: { name: userName },
+          refetchQueries: [{ query: GetCodegenUsersDoc }],
+        });
+        userName = "";
+      }}>Add</button
+    >
+  </div>
+  <div class="card">
+    <h2>Last user added</h2>
+    <div>
+      <pre>{subscription?.data?.usersAdded}</pre>
+    </div>
+  </div>
+  <div class="card">
+    <h2>List of Codegen Users</h2>
+    {#if query.loading}
+      <p>...loading users</p>
+    {:else}
+      {#if query.data?.users.length === 0}
+        <p>No User (Add some!)</p>
+      {/if}
+      {#each query.data?.users || [] as user}
+        <div>{user.name}</div>
+      {/each}
+      <button
+        style="float: right"
+        onclick={() => {
+          DeleteCodegenUser({
+            refetchQueries: [{ query: GetCodegenUsersDoc }],
+          });
+        }}>Delete all</button
+      >
+    {/if}
+  </div>
+</main>
 
 <style>
   .cards {
@@ -25,48 +69,3 @@
     margin: 20px;
   }
 </style>
-
-<br />
-<main class="cards">
-  <div class="card">
-    <h2>Add User</h2>
-    <input placeholder="User name..." bind:value={userName} />
-    <button
-      disabled={userName.length === 0}
-      on:click={() => {
-        InsertUsersAndPublish({
-          variables: { name: userName },
-          refetchQueries: [{ query: GetCodegenUsersDoc }],
-        });
-        userName = '';
-      }}>Add</button>
-  </div>
-  <div class="card">
-    <h2>Last user added</h2>
-    <div>
-      <pre>{$subscription?.data?.userAdded}</pre>
-    </div>
-  </div>
-  <div class="card">
-    <h2>List of Codegen Users</h2>
-    {#if $query.loading}
-      <p>...loading users</p>
-    {:else}
-      {#if $query.data?.users.length === 0}
-        <p>No User (Add some!)</p>
-      {/if}
-      {#each $query.data?.users || [] as user}
-        <div>{user.name}</div>
-      {/each}
-      <!-- Todo... Add users here with the subscription adding user? -->
-      <!-- auto trigger the query again?-->
-      <button
-        style="float: right"
-        on:click={() => {
-          DeleteCodegenUser({
-            refetchQueries: [{ query: GetCodegenUsersDoc }],
-          });
-        }}>Delete all</button>
-    {/if}
-  </div>
-</main>

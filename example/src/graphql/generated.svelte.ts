@@ -1,4 +1,4 @@
-import client from "./apollo-client";
+import client from "src/apollo-client";
 import type {
         TypedDocumentNode, ApolloClient, ObservableQuery, QueryOptions
       } from "@apollo/client";
@@ -106,6 +106,18 @@ export type DeleteCodegenUserMutationVariables = Exact<{ [key: string]: never; }
 
 export type DeleteCodegenUserMutation = { __typename?: 'Mutation', delete_users: { __typename?: 'Delete_users_mutation_response', affected_rows: number } };
 
+export type UsersAddedSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UsersAddedSubscription = { __typename?: 'Subscription', usersAdded: Array<{ __typename?: 'User', id: number, name: string, timestamp: string }> };
+
+export type InsertUsersAndPublishMutationVariables = Exact<{
+  name: Scalars['String']['input'];
+}>;
+
+
+export type InsertUsersAndPublishMutation = { __typename?: 'Mutation', insert_users: { __typename?: 'Insert_users_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'User', name: string, rocket?: string | null }> } };
+
 export type GetCodegenUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -123,18 +135,6 @@ export type GetLaunchesWithArgsQueryVariables = Exact<{
 
 export type GetLaunchesWithArgsQuery = { __typename?: 'Query', launches: Array<{ __typename?: 'Launch', mission_id?: string | null, mission_name?: string | null }> };
 
-export type UsersAddedSubscriptionVariables = Exact<{ [key: string]: never; }>;
-
-
-export type UsersAddedSubscription = { __typename?: 'Subscription', usersAdded: Array<{ __typename?: 'User', id: number, name: string, timestamp: string }> };
-
-export type InsertUsersAndPublishMutationVariables = Exact<{
-  name: Scalars['String']['input'];
-}>;
-
-
-export type InsertUsersAndPublishMutation = { __typename?: 'Mutation', insert_users: { __typename?: 'Insert_users_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'User', name: string, rocket?: string | null }> } };
-
 
 export const AddCodegenUserDoc = gql`
     mutation AddCodegenUser($userName: String!) {
@@ -147,6 +147,26 @@ export const DeleteCodegenUserDoc = gql`
     mutation DeleteCodegenUser {
   delete_users(where: {rocket: {_eq: "codegen"}}) {
     affected_rows
+  }
+}
+    `;
+export const UsersAddedDoc = gql`
+    subscription UsersAdded {
+  usersAdded {
+    id
+    name
+    timestamp
+  }
+}
+    `;
+export const InsertUsersAndPublishDoc = gql`
+    mutation InsertUsersAndPublish($name: String!) {
+  insert_users(objects: {name: $name, rocket: "codegen"}) {
+    affected_rows
+    returning {
+      name
+      rocket
+    }
   }
 }
     `;
@@ -174,26 +194,6 @@ export const GetLaunchesWithArgsDoc = gql`
   }
 }
     `;
-export const UsersAddedDoc = gql`
-    subscription UsersAdded {
-  usersAdded {
-    id
-    name
-    timestamp
-  }
-}
-    `;
-export const InsertUsersAndPublishDoc = gql`
-    mutation InsertUsersAndPublish($name: String!) {
-  insert_users(objects: {name: $name, rocket: "codegen"}) {
-    affected_rows
-    returning {
-      name
-      rocket
-    }
-  }
-}
-    `;
 export const AddCodegenUser = (
             options: Omit<
               ApolloClient.MutateOptions<AddCodegenUserMutation, AddCodegenUserMutationVariables, any>,
@@ -214,6 +214,29 @@ export const DeleteCodegenUser = (
           ) => {
             const m = client.mutate({
               mutation: DeleteCodegenUserDoc as TypedDocumentNode<DeleteCodegenUserMutation, DeleteCodegenUserMutationVariables>,
+              ...options,
+            });
+            return m;
+          }
+export const UsersAdded = (
+            options: Omit<ApolloClient.SubscribeOptions<UsersAddedSubscription, UsersAddedSubscriptionVariables>, "query">
+          ) => {
+            const q = client.subscribe(
+              {
+                query: UsersAddedDoc as TypedDocumentNode<UsersAddedSubscription, UsersAddedSubscriptionVariables>,
+                ...options,
+              }
+            )
+            return q;
+          }
+export const InsertUsersAndPublish = (
+            options: Omit<
+              ApolloClient.MutateOptions<InsertUsersAndPublishMutation, InsertUsersAndPublishMutationVariables, any>,
+              "mutation"
+            >
+          ) => {
+            const m = client.mutate({
+              mutation: InsertUsersAndPublishDoc as TypedDocumentNode<InsertUsersAndPublishMutation, InsertUsersAndPublishMutationVariables>,
               ...options,
             });
             return m;
@@ -332,26 +355,3 @@ export const AsyncGetLaunchesWithArgs = (
             return client.query({query: GetLaunchesWithArgsDoc as TypedDocumentNode<GetLaunchesWithArgsQuery, GetLaunchesWithArgsQueryVariables>, ...options})
           }
         
-export const UsersAdded = (
-            options: Omit<ApolloClient.SubscribeOptions<UsersAddedSubscription, UsersAddedSubscriptionVariables>, "query">
-          ) => {
-            const q = client.subscribe(
-              {
-                query: UsersAddedDoc as TypedDocumentNode<UsersAddedSubscription, UsersAddedSubscriptionVariables>,
-                ...options,
-              }
-            )
-            return q;
-          }
-export const InsertUsersAndPublish = (
-            options: Omit<
-              ApolloClient.MutateOptions<InsertUsersAndPublishMutation, InsertUsersAndPublishMutationVariables, any>,
-              "mutation"
-            >
-          ) => {
-            const m = client.mutate({
-              mutation: InsertUsersAndPublishDoc as TypedDocumentNode<InsertUsersAndPublishMutation, InsertUsersAndPublishMutationVariables>,
-              ...options,
-            });
-            return m;
-          }

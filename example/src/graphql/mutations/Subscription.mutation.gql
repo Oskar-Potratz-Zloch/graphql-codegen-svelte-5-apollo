@@ -1,4 +1,3 @@
-# subscribe to added users
 subscription UsersAdded {
   usersAdded {
     id
@@ -7,7 +6,6 @@ subscription UsersAdded {
   }
 }
 
-# Insert a new user and Publish
 mutation InsertUsersAndPublish($name: String!) {
   insert_users(objects: { name: $name, rocket: "codegen" }) {
     affected_rows

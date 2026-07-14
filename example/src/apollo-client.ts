@@ -1,37 +1,8 @@
-import {
-  ApolloClient,
-  InMemoryCache,
-  HttpLink,
-  ApolloLink,
-} from '@apollo/client';
-import { WebSocketLink } from '@apollo/client/link/ws';
-import { getOperationAST } from 'graphql';
-
-const cache = new InMemoryCache();
-
-const wsLink = new WebSocketLink({
-  uri: 'wss://space-x-land-with-sub.herokuapp.com/graphql/',
-  options: {
-    lazy: true,
-    reconnect: true,
-  },
-});
-
-const httpLink = new HttpLink({
-  uri: 'https://space-x-land-with-sub.herokuapp.com/graphql/',
-});
-
-const link = ApolloLink.split(
-  (op: any) => {
-    // check if it is a subscription
-    const operationAST = getOperationAST(op.query, op.operationName);
-    return !!operationAST && operationAST.operation === 'subscription';
-  },
-  wsLink,
-  httpLink
-);
+import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
 
 export default new ApolloClient({
-  cache,
-  link,
+  cache: new InMemoryCache(),
+  link: new HttpLink({
+    uri: "https://spacex-production.up.railway.app/graphql",
+  }),
 });
