@@ -22,7 +22,7 @@ const config: CodegenConfig = {
   schema: "path/to/schema.graphql", // path or URL to your GraphQL schema
   documents: "./src/**/*.graphql",   // glob for your query/mutation/subscription files
   generates: {
-    "./src/lib/generated.ts": {      // output file path
+    "./src/lib/generated.svelte.ts": {      // MUST be .svelte.ts — $state runes won't compile in .ts files
       plugins: [
         "typescript",                          // generates TS types from schema
         "typescript-operations",               // generates types for your operations
@@ -64,7 +64,7 @@ The plugin generates a reactive hook returning `{ get data(), get loading(), get
 
 ```svelte
 <script lang="ts">
-  import { GetUser } from "$lib/generated";
+  import { GetUser } from "$lib/generated.svelte";
 
   const userId = $state("1");
   const result = GetUser({ id: userId });
@@ -104,7 +104,7 @@ mutation CreateUser($input: CreateUserInput!) {
 
 ```svelte
 <script lang="ts">
-  import { CreateUser } from "$lib/generated";
+  import { CreateUser } from "$lib/generated.svelte";
 
   const mutate = CreateUser;
 </script>
@@ -124,7 +124,7 @@ subscription OnMessageAdded {
 
 ```svelte
 <script lang="ts">
-  import { OnMessageAdded } from "$lib/generated";
+  import { OnMessageAdded } from "$lib/generated.svelte";
 
   const result = OnMessageAdded();
 </script>
