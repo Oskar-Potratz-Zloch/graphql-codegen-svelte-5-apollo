@@ -1,5 +1,5 @@
 {
-  "name": "svelte-app",
+  "name": "example-graphql-codegen-svelte-5-apollo",
   "version": "0.0.1",
   "private": true,
   "scripts": {
