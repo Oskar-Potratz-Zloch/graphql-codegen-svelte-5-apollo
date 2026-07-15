@@ -1,6 +1,6 @@
 import client from "src/apollo-client";
 import type {
-        TypedDocumentNode, ApolloClient, ObservableQuery, QueryOptions
+        TypedDocumentNode, ApolloClient, ObservableQuery
       } from "@apollo/client";
 import { gql } from "@apollo/client"
 export type Maybe<T> = T | null;
@@ -19,244 +19,199 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
-export type Delete_Users_Mutation_Response = {
-  __typename?: 'Delete_users_mutation_response';
-  affected_rows: Scalars['Int']['output'];
+export type Continent = {
+  __typename?: 'Continent';
+  code: Scalars['ID']['output'];
+  countries: Array<Country>;
+  name: Scalars['String']['output'];
 };
 
-export type Insert_Users_Input = {
-  name: Scalars['String']['input'];
-  rocket?: InputMaybe<Scalars['String']['input']>;
+export type Country = {
+  __typename?: 'Country';
+  area?: Maybe<Scalars['Float']['output']>;
+  callingCodes: Array<Scalars['String']['output']>;
+  capital?: Maybe<Scalars['String']['output']>;
+  code: Scalars['ID']['output'];
+  continent: Continent;
+  currencies: Array<Scalars['String']['output']>;
+  currency?: Maybe<Scalars['String']['output']>;
+  demonym?: Maybe<Scalars['String']['output']>;
+  emoji: Scalars['String']['output'];
+  emojiU?: Maybe<Scalars['String']['output']>;
+  languages: Array<Language>;
+  name: Scalars['String']['output'];
+  native: Scalars['String']['output'];
+  phone: Scalars['String']['output'];
+  states: Array<State>;
 };
 
-export type Insert_Users_Mutation_Response = {
-  __typename?: 'Insert_users_mutation_response';
-  affected_rows: Scalars['Int']['output'];
-  returning: Array<User>;
+export type CountryFilterInput = {
+  code?: InputMaybe<StringFilterInput>;
+  continent?: InputMaybe<StringFilterInput>;
+  currency?: InputMaybe<StringFilterInput>;
 };
 
-export type Launch = {
-  __typename?: 'Launch';
-  mission_id?: Maybe<Scalars['String']['output']>;
-  mission_name?: Maybe<Scalars['String']['output']>;
+export type Language = {
+  __typename?: 'Language';
+  code: Scalars['ID']['output'];
+  name?: Maybe<Scalars['String']['output']>;
+  native?: Maybe<Scalars['String']['output']>;
+  rtl?: Maybe<Scalars['Boolean']['output']>;
 };
 
-export type Mutation = {
-  __typename?: 'Mutation';
-  delete_users: Delete_Users_Mutation_Response;
-  insert_users: Insert_Users_Mutation_Response;
-};
-
-
-export type MutationDelete_UsersArgs = {
-  where?: InputMaybe<User_Bool_Exp>;
-};
-
-
-export type MutationInsert_UsersArgs = {
-  objects: Insert_Users_Input;
+export type LanguageFilterInput = {
+  code?: InputMaybe<StringFilterInput>;
 };
 
 export type Query = {
   __typename?: 'Query';
-  launches: Array<Launch>;
-  users: Array<User>;
+  continent?: Maybe<Continent>;
+  continents: Array<Continent>;
+  countries: Array<Country>;
+  country?: Maybe<Country>;
+  language?: Maybe<Language>;
+  languages: Array<Language>;
 };
 
 
-export type QueryLaunchesArgs = {
-  limit?: InputMaybe<Scalars['Int']['input']>;
+export type QueryContinentArgs = {
+  code: Scalars['ID']['input'];
 };
 
 
-export type QueryUsersArgs = {
-  where?: InputMaybe<User_Bool_Exp>;
+export type QueryCountriesArgs = {
+  filter?: InputMaybe<CountryFilterInput>;
 };
 
-export type String_Comparison_Exp = {
-  _eq?: InputMaybe<Scalars['String']['input']>;
+
+export type QueryCountryArgs = {
+  code: Scalars['ID']['input'];
 };
 
-export type Subscription = {
-  __typename?: 'Subscription';
-  usersAdded: Array<User>;
+
+export type QueryLanguageArgs = {
+  code: Scalars['ID']['input'];
 };
 
-export type User = {
-  __typename?: 'User';
-  id: Scalars['Int']['output'];
+
+export type QueryLanguagesArgs = {
+  filter?: InputMaybe<LanguageFilterInput>;
+};
+
+export type State = {
+  __typename?: 'State';
+  code?: Maybe<Scalars['String']['output']>;
+  country: Country;
   name: Scalars['String']['output'];
-  rocket?: Maybe<Scalars['String']['output']>;
-  timestamp: Scalars['String']['output'];
 };
 
-export type User_Bool_Exp = {
-  rocket?: InputMaybe<String_Comparison_Exp>;
+export type StringFilterInput = {
+  eq?: InputMaybe<Scalars['String']['input']>;
+  in?: InputMaybe<Array<Scalars['String']['input']>>;
+  ne?: InputMaybe<Scalars['String']['input']>;
+  nin?: InputMaybe<Array<Scalars['String']['input']>>;
+  regex?: InputMaybe<Scalars['String']['input']>;
 };
 
-export type AddCodegenUserMutationVariables = Exact<{
-  userName: Scalars['String']['input'];
+export type GetContinentsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetContinentsQuery = { __typename?: 'Query', continents: Array<{ __typename?: 'Continent', code: string, name: string }> };
+
+export type GetCountriesByContinentQueryVariables = Exact<{
+  code: Scalars['ID']['input'];
 }>;
 
 
-export type AddCodegenUserMutation = { __typename?: 'Mutation', insert_users: { __typename?: 'Insert_users_mutation_response', affected_rows: number } };
+export type GetCountriesByContinentQuery = { __typename?: 'Query', continent?: { __typename?: 'Continent', name: string, countries: Array<{ __typename?: 'Country', code: string, name: string, emoji: string, capital?: string | null, languages: Array<{ __typename?: 'Language', name?: string | null }> }> } | null };
 
-export type DeleteCodegenUserMutationVariables = Exact<{ [key: string]: never; }>;
-
-
-export type DeleteCodegenUserMutation = { __typename?: 'Mutation', delete_users: { __typename?: 'Delete_users_mutation_response', affected_rows: number } };
-
-export type UsersAddedSubscriptionVariables = Exact<{ [key: string]: never; }>;
-
-
-export type UsersAddedSubscription = { __typename?: 'Subscription', usersAdded: Array<{ __typename?: 'User', id: number, name: string, timestamp: string }> };
-
-export type InsertUsersAndPublishMutationVariables = Exact<{
-  name: Scalars['String']['input'];
+export type GetCountryQueryVariables = Exact<{
+  code: Scalars['ID']['input'];
 }>;
 
 
-export type InsertUsersAndPublishMutation = { __typename?: 'Mutation', insert_users: { __typename?: 'Insert_users_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'User', name: string, rocket?: string | null }> } };
+export type GetCountryQuery = { __typename?: 'Query', country?: { __typename?: 'Country', code: string, name: string, native: string, capital?: string | null, emoji: string, currency?: string | null, languages: Array<{ __typename?: 'Language', code: string, name?: string | null }>, states: Array<{ __typename?: 'State', name: string }>, continent: { __typename?: 'Continent', name: string } } | null };
 
-export type GetCodegenUsersQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetCodegenUsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', name: string, timestamp: string }> };
-
-export type GetLaunchesQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetLaunchesQuery = { __typename?: 'Query', launches: Array<{ __typename?: 'Launch', mission_id?: string | null, mission_name?: string | null }> };
-
-export type GetLaunchesWithArgsQueryVariables = Exact<{
-  limit?: InputMaybe<Scalars['Int']['input']>;
+export type SearchCountriesQueryVariables = Exact<{
+  filter?: InputMaybe<CountryFilterInput>;
 }>;
 
 
-export type GetLaunchesWithArgsQuery = { __typename?: 'Query', launches: Array<{ __typename?: 'Launch', mission_id?: string | null, mission_name?: string | null }> };
+export type SearchCountriesQuery = { __typename?: 'Query', countries: Array<{ __typename?: 'Country', code: string, name: string, emoji: string, capital?: string | null }> };
 
 
-export const AddCodegenUserDoc = gql`
-    mutation AddCodegenUser($userName: String!) {
-  insert_users(objects: {name: $userName, rocket: "codegen"}) {
-    affected_rows
-  }
-}
-    `;
-export const DeleteCodegenUserDoc = gql`
-    mutation DeleteCodegenUser {
-  delete_users(where: {rocket: {_eq: "codegen"}}) {
-    affected_rows
-  }
-}
-    `;
-export const UsersAddedDoc = gql`
-    subscription UsersAdded {
-  usersAdded {
-    id
+export const GetContinentsDoc = gql`
+    query GetContinents {
+  continents {
+    code
     name
-    timestamp
   }
 }
     `;
-export const InsertUsersAndPublishDoc = gql`
-    mutation InsertUsersAndPublish($name: String!) {
-  insert_users(objects: {name: $name, rocket: "codegen"}) {
-    affected_rows
-    returning {
+export const GetCountriesByContinentDoc = gql`
+    query GetCountriesByContinent($code: ID!) {
+  continent(code: $code) {
+    name
+    countries {
+      code
       name
-      rocket
+      emoji
+      capital
+      languages {
+        name
+      }
     }
   }
 }
     `;
-export const GetCodegenUsersDoc = gql`
-    query GetCodegenUsers {
-  users(where: {rocket: {_eq: "codegen"}}) {
+export const GetCountryDoc = gql`
+    query GetCountry($code: ID!) {
+  country(code: $code) {
+    code
     name
-    timestamp
+    native
+    capital
+    emoji
+    currency
+    languages {
+      code
+      name
+    }
+    states {
+      name
+    }
+    continent {
+      name
+    }
   }
 }
     `;
-export const GetLaunchesDoc = gql`
-    query GetLaunches {
-  launches {
-    mission_id
-    mission_name
+export const SearchCountriesDoc = gql`
+    query SearchCountries($filter: CountryFilterInput) {
+  countries(filter: $filter) {
+    code
+    name
+    emoji
+    capital
   }
 }
     `;
-export const GetLaunchesWithArgsDoc = gql`
-    query GetLaunchesWithArgs($limit: Int) {
-  launches(limit: $limit) {
-    mission_id
-    mission_name
-  }
-}
-    `;
-export const AddCodegenUser = (
+export const GetContinents = (
             options: Omit<
-              ApolloClient.MutateOptions<AddCodegenUserMutation, AddCodegenUserMutationVariables, any>,
-              "mutation"
-            >
-          ) => {
-            const m = client.mutate({
-              mutation: AddCodegenUserDoc as TypedDocumentNode<AddCodegenUserMutation, AddCodegenUserMutationVariables>,
-              ...options,
-            });
-            return m;
-          }
-export const DeleteCodegenUser = (
-            options: Omit<
-              ApolloClient.MutateOptions<DeleteCodegenUserMutation, DeleteCodegenUserMutationVariables, any>,
-              "mutation"
-            >
-          ) => {
-            const m = client.mutate({
-              mutation: DeleteCodegenUserDoc as TypedDocumentNode<DeleteCodegenUserMutation, DeleteCodegenUserMutationVariables>,
-              ...options,
-            });
-            return m;
-          }
-export const UsersAdded = (
-            options: Omit<ApolloClient.SubscribeOptions<UsersAddedSubscription, UsersAddedSubscriptionVariables>, "query">
-          ) => {
-            const q = client.subscribe(
-              {
-                query: UsersAddedDoc as TypedDocumentNode<UsersAddedSubscription, UsersAddedSubscriptionVariables>,
-                ...options,
-              }
-            )
-            return q;
-          }
-export const InsertUsersAndPublish = (
-            options: Omit<
-              ApolloClient.MutateOptions<InsertUsersAndPublishMutation, InsertUsersAndPublishMutationVariables, any>,
-              "mutation"
-            >
-          ) => {
-            const m = client.mutate({
-              mutation: InsertUsersAndPublishDoc as TypedDocumentNode<InsertUsersAndPublishMutation, InsertUsersAndPublishMutationVariables>,
-              ...options,
-            });
-            return m;
-          }
-export const GetCodegenUsers = (
-            options: Omit<
-              ApolloClient.WatchQueryOptions<GetCodegenUsersQuery, GetCodegenUsersQueryVariables>,
+              ApolloClient.WatchQueryOptions<GetContinentsQuery, GetContinentsQueryVariables>,
               "query"
             >
           ) => {
             const q = client.watchQuery({
-              query: GetCodegenUsersDoc as TypedDocumentNode<GetCodegenUsersQuery, GetCodegenUsersQueryVariables>,
+              query: GetContinentsDoc as TypedDocumentNode<GetContinentsQuery, GetContinentsQueryVariables>,
               ...options,
             });
-            let data = $state<GetCodegenUsersQuery>();
+            let data = $state<GetContinentsQuery>();
             let loading = $state(true);
             let error = $state<Error>();
             let networkStatus = $state(1);
-            q.subscribe((v: ObservableQuery.Result<GetCodegenUsersQuery>) => {
-              data = v.data as unknown as GetCodegenUsersQuery;
+            q.subscribe((v: ObservableQuery.Result<GetContinentsQuery>) => {
+              data = v.data as unknown as GetContinentsQuery;
               loading = v.loading;
               error = v.error;
               networkStatus = v.networkStatus;
@@ -270,31 +225,31 @@ export const GetCodegenUsers = (
             };
           }
         
-export const AsyncGetCodegenUsers = (
+export const AsyncGetContinents = (
             options: Omit<
-              ApolloClient.QueryOptions<GetCodegenUsersQuery, GetCodegenUsersQueryVariables>,
+              ApolloClient.QueryOptions<GetContinentsQuery, GetContinentsQueryVariables>,
               "query"
             >
           ) => {
-            return client.query({query: GetCodegenUsersDoc as TypedDocumentNode<GetCodegenUsersQuery, GetCodegenUsersQueryVariables>, ...options})
+            return client.query({query: GetContinentsDoc as TypedDocumentNode<GetContinentsQuery, GetContinentsQueryVariables>, ...options})
           }
         
-export const GetLaunches = (
+export const GetCountriesByContinent = (
             options: Omit<
-              ApolloClient.WatchQueryOptions<GetLaunchesQuery, GetLaunchesQueryVariables>,
+              ApolloClient.WatchQueryOptions<GetCountriesByContinentQuery, GetCountriesByContinentQueryVariables>,
               "query"
             >
           ) => {
             const q = client.watchQuery({
-              query: GetLaunchesDoc as TypedDocumentNode<GetLaunchesQuery, GetLaunchesQueryVariables>,
+              query: GetCountriesByContinentDoc as TypedDocumentNode<GetCountriesByContinentQuery, GetCountriesByContinentQueryVariables>,
               ...options,
             });
-            let data = $state<GetLaunchesQuery>();
+            let data = $state<GetCountriesByContinentQuery>();
             let loading = $state(true);
             let error = $state<Error>();
             let networkStatus = $state(1);
-            q.subscribe((v: ObservableQuery.Result<GetLaunchesQuery>) => {
-              data = v.data as unknown as GetLaunchesQuery;
+            q.subscribe((v: ObservableQuery.Result<GetCountriesByContinentQuery>) => {
+              data = v.data as unknown as GetCountriesByContinentQuery;
               loading = v.loading;
               error = v.error;
               networkStatus = v.networkStatus;
@@ -308,31 +263,31 @@ export const GetLaunches = (
             };
           }
         
-export const AsyncGetLaunches = (
+export const AsyncGetCountriesByContinent = (
             options: Omit<
-              ApolloClient.QueryOptions<GetLaunchesQuery, GetLaunchesQueryVariables>,
+              ApolloClient.QueryOptions<GetCountriesByContinentQuery, GetCountriesByContinentQueryVariables>,
               "query"
             >
           ) => {
-            return client.query({query: GetLaunchesDoc as TypedDocumentNode<GetLaunchesQuery, GetLaunchesQueryVariables>, ...options})
+            return client.query({query: GetCountriesByContinentDoc as TypedDocumentNode<GetCountriesByContinentQuery, GetCountriesByContinentQueryVariables>, ...options})
           }
         
-export const GetLaunchesWithArgs = (
+export const GetCountry = (
             options: Omit<
-              ApolloClient.WatchQueryOptions<GetLaunchesWithArgsQuery, GetLaunchesWithArgsQueryVariables>,
+              ApolloClient.WatchQueryOptions<GetCountryQuery, GetCountryQueryVariables>,
               "query"
             >
           ) => {
             const q = client.watchQuery({
-              query: GetLaunchesWithArgsDoc as TypedDocumentNode<GetLaunchesWithArgsQuery, GetLaunchesWithArgsQueryVariables>,
+              query: GetCountryDoc as TypedDocumentNode<GetCountryQuery, GetCountryQueryVariables>,
               ...options,
             });
-            let data = $state<GetLaunchesWithArgsQuery>();
+            let data = $state<GetCountryQuery>();
             let loading = $state(true);
             let error = $state<Error>();
             let networkStatus = $state(1);
-            q.subscribe((v: ObservableQuery.Result<GetLaunchesWithArgsQuery>) => {
-              data = v.data as unknown as GetLaunchesWithArgsQuery;
+            q.subscribe((v: ObservableQuery.Result<GetCountryQuery>) => {
+              data = v.data as unknown as GetCountryQuery;
               loading = v.loading;
               error = v.error;
               networkStatus = v.networkStatus;
@@ -346,12 +301,50 @@ export const GetLaunchesWithArgs = (
             };
           }
         
-export const AsyncGetLaunchesWithArgs = (
+export const AsyncGetCountry = (
             options: Omit<
-              ApolloClient.QueryOptions<GetLaunchesWithArgsQuery, GetLaunchesWithArgsQueryVariables>,
+              ApolloClient.QueryOptions<GetCountryQuery, GetCountryQueryVariables>,
               "query"
             >
           ) => {
-            return client.query({query: GetLaunchesWithArgsDoc as TypedDocumentNode<GetLaunchesWithArgsQuery, GetLaunchesWithArgsQueryVariables>, ...options})
+            return client.query({query: GetCountryDoc as TypedDocumentNode<GetCountryQuery, GetCountryQueryVariables>, ...options})
+          }
+        
+export const SearchCountries = (
+            options: Omit<
+              ApolloClient.WatchQueryOptions<SearchCountriesQuery, SearchCountriesQueryVariables>,
+              "query"
+            >
+          ) => {
+            const q = client.watchQuery({
+              query: SearchCountriesDoc as TypedDocumentNode<SearchCountriesQuery, SearchCountriesQueryVariables>,
+              ...options,
+            });
+            let data = $state<SearchCountriesQuery>();
+            let loading = $state(true);
+            let error = $state<Error>();
+            let networkStatus = $state(1);
+            q.subscribe((v: ObservableQuery.Result<SearchCountriesQuery>) => {
+              data = v.data as unknown as SearchCountriesQuery;
+              loading = v.loading;
+              error = v.error;
+              networkStatus = v.networkStatus;
+            });
+            return {
+              get data() { return data; },
+              get loading() { return loading; },
+              get error() { return error; },
+              get networkStatus() { return networkStatus; },
+              get query() { return q; },
+            };
+          }
+        
+export const AsyncSearchCountries = (
+            options: Omit<
+              ApolloClient.QueryOptions<SearchCountriesQuery, SearchCountriesQueryVariables>,
+              "query"
+            >
+          ) => {
+            return client.query({query: SearchCountriesDoc as TypedDocumentNode<SearchCountriesQuery, SearchCountriesQueryVariables>, ...options})
           }
         

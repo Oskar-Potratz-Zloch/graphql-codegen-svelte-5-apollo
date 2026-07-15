@@ -43,16 +43,23 @@ module.exports = {
       (d) => d.kind === Kind.OPERATION_DEFINITION
     ) as OperationDefinitionNode[];
 
-    const operationImport = `TypedDocumentNode, ApolloClient, ObservableQuery${
-      config.asyncQuery ? ", QueryOptions" : ""
-    }`;
+    const hasMutations = operations.some((o) => o.operation === "mutation");
+    const hasQueries = operations.some((o) => o.operation === "query");
+
+    const typeImports = [
+      "TypedDocumentNode",
+      "ApolloClient",
+      "ObservableQuery",
+    ];
+
+    const valueImports = ["gql", ...(hasMutations ? ["InMemoryCache"] : [])];
 
     const imports = [
       `import client from "${config.clientPath}";`,
       `import type {
-        ${operationImport}
+        ${typeImports.join(", ")}
       } from "@apollo/client";`,
-      `import { gql } from "@apollo/client"`,
+      `import { ${valueImports.join(", ")} } from "@apollo/client"`,
     ];
 
     const ops = operations
@@ -113,7 +120,7 @@ export const Async${o.name!.value} = (
         if (o.operation == "mutation") {
           operation = `export const ${o.name!.value} = (
             options: Omit<
-              ApolloClient.MutateOptions<${op}, ${opv}, any>,
+              ApolloClient.MutateOptions<${op}, ${opv}, InMemoryCache>,
               "mutation"
             >
           ) => {

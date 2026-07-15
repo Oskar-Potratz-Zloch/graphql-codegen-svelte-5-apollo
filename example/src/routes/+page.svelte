@@ -1,38 +1,30 @@
 <script lang="ts">
-  import { fade } from "svelte/transition";
-  import { GetLaunches, type Launch } from "src/graphql/generated.svelte";
+  import { resolve } from "$app/paths";
+  import ContinentCard from "src/lib/components/ContinentCard.svelte";
 
-  const query = GetLaunches({});
+  let { data } = $props();
 </script>
 
-<main class="cards">
-  <div class="card">
-    <h2>SpaceX all launches</h2>
-    {#if query.loading}
-      <p>Loading...</p>
-    {/if}
-    {#each query.data?.launches || [] as launch (launch.mission_id)}
-      <div transition:fade>
-        <div>
-          {launch.mission_id?.length === 0 || !launch.mission_id
-            ? "???????"
-            : launch.mission_id[0]}
-          - {launch.mission_name}
-        </div>
-      </div>
+<header>
+  <h1 class="h2 font-bold text-primary-500">Continents</h1>
+  <hr class="border-t mb-8 border-primary-950" />
+</header>
+
+{#if data.continents.loading}
+  <div class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+    {#each Array(8) as _}
+      <div class="h-24 animate-pulse rounded-container bg-surface-700"></div>
     {/each}
   </div>
-</main>
-
-<style>
-  .cards {
-    display: flex;
-    justify-content: space-around;
-  }
-
-  .card {
-    padding: 10px;
-    background-color: rgb(173, 196, 178);
-    box-shadow: 10px 5px 5px #ff3e00;
-  }
-</style>
+{:else if data.continents.error}
+  <p class="text-error-500">{data.continents.error.message}</p>
+{:else}
+  <div class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+    {#each data.continents.data?.continents || [] as continent (continent.code)}
+      <ContinentCard
+        {continent}
+        href={resolve("/[continent]", { continent: continent.code })}
+      />
+    {/each}
+  </div>
+{/if}

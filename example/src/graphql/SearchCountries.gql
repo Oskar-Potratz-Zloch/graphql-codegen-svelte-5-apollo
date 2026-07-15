@@ -1,0 +1,15 @@
+# Example: Searching countries by name (requires filtering on the API)
+# The Countries API supports filter argument:
+#   countries(filter: { name: { regex: "^U" } })
+# This demonstrates how you'd use variables with the plugin.
+#
+# NOTE: This API is read-only. For mutations, you'd need a custom backend.
+
+query SearchCountries($filter: CountryFilterInput) {
+  countries(filter: $filter) {
+    code
+    name
+    emoji
+    capital
+  }
+}

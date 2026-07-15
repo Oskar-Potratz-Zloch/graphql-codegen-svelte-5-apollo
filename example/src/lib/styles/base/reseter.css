@@ -1,0 +1,11 @@
+@layer base {
+	:focus-visible {
+		outline: 2px solid var(--color-primary-500);
+		outline-offset: 2px;
+	}
+	pre {
+		font-family: inherit;
+		font-size: inherit;
+		white-space: pre-wrap;
+	}
+}
